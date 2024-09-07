@@ -19,7 +19,7 @@ BUILDDIR		 = build
 #######################################
 # sphinx-autobuild
 #######################################
-SPHINXAUTOBUILD	?= $(VENV)/bin/sphinx-autobuild
+SPHINXAUTOBUILD	?= sphinx-autobuild
 PORT			?= 8000
 
 #######################################
@@ -34,6 +34,7 @@ all: build run
 
 $(VENV):
 	python3 -m venv $@
+	$(PIP) install -r requirements.txt
 
 .PHONY: requirements.txt
 requirements.txt:
@@ -53,7 +54,7 @@ help: $(VENV)
 #######################################
 # sphinx-autobuild
 #######################################
-autobuild: Makefile $(VENV)
+autobuild: html $(VENV)
 	@$(SPHINXAUTOBUILD) $(SOURCEDIR) $(BUILDDIR)/html --port $(PORT)
 
 #######################################

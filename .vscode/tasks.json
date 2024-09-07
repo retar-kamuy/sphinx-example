@@ -6,7 +6,7 @@
         {
             "label": "sphinx-autobuild",
             "type": "shell",
-            "command": "source .venv/bin/activate && sphinx-autobuild source build/html --port 8000",
+            "command": "make autobuild",
             "presentation": {
                 "reveal": "silent",
                 "panel": "dedicated"
