@@ -5,7 +5,6 @@ VENV			 = .venv
 PYTHON			 = $(VENV)/bin/python
 PIP				 = $(VENV)/bin/pip
 
-DOCKER			 = docker
 VERSION			 = 1.0.0
 
 #######################################
@@ -25,10 +24,20 @@ PORT			?= 8000
 #######################################
 # Docker
 #######################################
+DOCKER			 = docker
 BUILD_IMAGE		 = sphinx-nginx
+RUN_PORT		 = 8080
+
+BUILD_FLAGS		 = --tag $(BUILD_IMAGE):$(VERSION)
+BUILD_FLAGS		+= --rm
+
+RUN_FLAGS		 = --name sphinx-nginx
+RUN_FLAGS		+= --detach
+RUN_FLAGS		+= --rm
+RUN_FLAGS		+= --publish $(RUN_PORT):80
 
 ###############################################################################
-# Rule
+# Rules
 ###############################################################################
 all: build run
 
@@ -62,14 +71,14 @@ autobuild: html $(VENV)
 #######################################
 .PHONY: build
 build: html
-	$(DOCKER) build --rm -t $(BUILD_IMAGE):$(VERSION) .
+	$(DOCKER) build $(BUILD_FLAGS) .
 	$(DOCKER) tag $(BUILD_IMAGE):$(VERSION) $(BUILD_IMAGE):latest
 
 .PHONY: run
 run:
-	$(DOCKER) run --rm --name sphinx-nginx -d -p 8080:80 $(BUILD_IMAGE):latest
+	$(DOCKER) run $(RUN_FLAGS) $(BUILD_IMAGE):latest
 
 .PHONY: clean
 clean:
 	rm -rf $(VENV) $(BUILDDIR)
-	$(DOCKER) image prune -a -f
+	$(DOCKER) image prune --all --force
